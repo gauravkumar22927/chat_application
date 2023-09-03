@@ -1,0 +1,364 @@
+Javascript is weakely typed language : No explicit type assignment
+
+Arrow function :
+	if only one statement inside function we can omit curly braces and return keyword
+
+	const add = (a,b) => a+b;
+
+	//if more than one statement inside function then use curly braces
+	
+	const abc = (a,b) => {
+	a = a+2;
+	b = b+3;
+
+	return a+b;
+	
+	};
+
+Arrow function without argument
+
+	const abc = () => 2+3;
+
+function inside object :
+
+	const person = {
+	  name : abc
+	  age : 26
+	  greet = () => {
+		console.log('Hi i am ' + this.name); // this undefined as it refer to global object
+	  }
+	};
+ 
+	const person = {
+	  name : abc
+	  age : 26
+	  greet = function(){
+		console.log('Hi i am ' + this.name); // it refer to person object
+	  }
+	};
+		or 
+
+	const person = {
+	  name : abc
+	  age : 26
+	  greet() {
+		console.log('Hi i am ' + this.name); // this refer to person object
+	  }
+	};
+
+Arrays :
+
+1	const arr = ['daf','gtte','getb','hrwrg']
+
+	//spread opereator -> 3 dots with name as of original object or array 
+	it takes one by one and concat to new array
+
+	const copyArray = [...arr]
+
+2	for object copy :
+	
+	  cons copy_obj = {...person}
+
+3	Rest operator to merge multiple args in function
+
+	const toArray = (...args) => {
+
+	    return args;
+	};
+
+	console.log(toArray(1,2,3,4));
+
+---------------------------
+callback : 
+
+ 	function myDisplayer(some) {
+  		document.getElementById("demo").innerHTML = some;
+	}
+
+	function myCalculator(num1, num2, myCallback) {
+  		let sum = num1 + num2;
+  		myCallback(sum);
+	}
+
+	myCalculator(5, 5, myDisplayer);
+
+	In the example above, myDisplayer is a called a callback function.
+
+	It is passed to myCalculator() as an argument.
+
+Async Code:
+
+	allows a program to run a function without freezing the entire program
+
+
+	const fetchData = (callback) => {
+  	  setTimeout(() => {
+    	  callback("Done!")
+  	 }, 1000)
+	}
+
+	setTimeout(() => {
+  	  console.log("Gaurav")
+  	  fetchData((text) => {
+    	   console.log(text)
+  	   })
+	  }, 2000)
+
+promise:
+
+	const fetchData = () => {
+  	  const promise = new Promise((resolve, reject) => {
+    	    setTimeout(() => {
+      	      resolve("Done!")
+    	    }, 1000)
+ 	  })
+  	  return promise
+	}
+
+	setTimeout(() => {
+  	  console.log("Gaurav")
+  	  fetchData()
+    	  .then((text) => {
+      	  console.log(text)
+          return fetchData()
+    	  })
+    	  .then((text2) => {
+      	  console.log(text2)
+    	  })
+	}, 2000)
+
+==================================================================
+
+creating Node server: Async 
+
+const http = require("http")
+const fs = require("fs")
+
+const server = http.createServer((req, res) => {
+  const url = req.url
+  const method = req.method
+  if (url === "/") {
+    res.write("<html>")
+    res.write("<head><title> Enter message </title></head>")
+    res.write('<body><form action ="/message" method="POST"> <input type="text" name="message"><button type = "submit"> send </button></form> </body>')
+    res.write("</html>")
+    return res.end()
+  }
+  if (url === "/message" && method === "POST") {
+    const body = []
+    req.on("data", (chunk) => {
+      console.log(chunk)
+      body.push(chunk)
+    })
+    return req.on("end", () => {
+      //return to prevent other line from execution before this function
+      const parsedBody = Buffer.concat(body).toString()
+      console.log(parsedBody)
+      const message = parsedBody.split("=")[1]
+      fs.writeFile("messages.txt", message, (err) => {
+        //async way of passing argument as err in arrow function
+        res.statusCode = 302
+        res.setHeader("Location", "/")
+        return res.end()
+      })
+    })
+  }
+
+=======================================================================
+5.3
+
+Nodemon : npm install --save nodemon // check spelling
+
+	package.json:
+		"start" :  "nodemon app.js"
+		"start-server": "node app.js"
+
+	npm start / or / nodemon app.js
+
+
+5.6
+app.listen(3000) //does both create server as well as listen
+
+=======================================================================
+//to parse incoming request
+
+npm install --save body-parser
+
+const bodyParser = require("body-parser")
+app.use(bodyParser.urlencoded())  //for req.body()
+
+========================
+
+app.use /or/ app.post  /or/ app.get for limiting type of request
+
+.get .post etc does exact match instead of first "/" .
+
+same path can repeat like '/admin.add-product' for get and post request 
+
+=======================================================================
+
+Adding 404 page
+
+app.use((req,res,next) => {
+  res.status(404).send('<h1> Page not found </h1>')  // .status or .header should be before send method
+})
+
+
+========================================================================
+
+can filter path out of common path we can add in main file app.js where all admin routes are 
+
+	app.use('/admin',adminRoutes);
+
+===========
+creating/serving/styling html page in views folder 
+
+5.14 for serving file we need to sendFile from path of the location in file system
+
+const path = require("path")
+res.sendFile(path.join(__dirname,'views','shop.html')) // __dirname give the parent directory of file 								calling the path
+
+more in 5.16
+===========================================================================
+5.18
+
+to server static file like main.css we need to save it in public -> css -> main.css 
+and Express ships with middleware express.static() to serve files directly to browser without processing like in shop.js->shop.html 
+
+app.use(express.static(path.join(__dirname,"public")))
+
+now <link rel="stylesheet" href="/css/main.css" > will work perfectly
+
+
+============================================================================
+
+16.
+Templating Engine :- EJS
+npm install --save ejs
+
+app.set("view engine", "ejs")
+app.set("views", "views") //use if stored in other folder other than views default is views
+
+app.use((req,res,next)=>{
+    res.status(404).render('404',{pagetitle : 'Page Not Found}); //404.ejs
+});
+
+
+shop.ejs file we can use passed variable along with render page
+
+	<%= pagetitle %> 
+
+	if condition syntax:
+
+	<% if (prods.length > 0) { %>
+	    -----
+    	    -----
+	<% } %>       /or/ 	<% } else { %>
+
+//to include copy of some code from a ejs into multiple files:
+
+	<%- include('includes/abc.ejs') %>
+
+
+navigation.ejs : for lost class because of common ejs file class = 'active' and its css will not work 
+
+	<a class = "<%= path === '/admin/addproduct' ? 'active' : '' %>
+
+
+======================================================
+7.2
+
+Model view controller
+
+Model: Represent the data in our code
+	work with the data eg. save ,fetch
+views : what users sees
+	Decoupled from from your application code
+controller : split across middleware Functions
+	connecting models and views 
+	contains the "in-between" logic
+routes fit in this picture : upon which path which contoller code should execute
+
+Example:
+
+error.js
+export.get404 = (req,res,next) => {
+    res.status(404).render('404',{pagetitle:'Page Not Found'})
+};
+
+now in app.js
+
+const errorController = require('./contoller/error');
+
+app.use(errorContoller.get404);
+===================================================================
+Async await syntactic suger over promise-then method
+Async return promise using await doesnot block code execution and continue to execute in the background
+await return promise so we can store in a variable
+
+Example:
+constant example_funct = async function(country) {
+
+    const res = await fetch(`https://restcountries.eu/rest/v2/name/${county}`);
+    console.log(res);
+}
+example_funct('india');
+console.log('first execute');
+
+-------------------------------------------------
+
+constant example_funct = async function(country) {
+
+    const res = await fetch(`https://restcountries.eu/rest/v2/name/${county}`);
+    const data = await res.json();
+    console.log(data)
+    renderCountry(data[0]);
+}
+example_funct('india');
+console.log('first execute');
+
+
+
+====================================================================
+Models: product model
+
+7.5 , 7.6 //read again
+
+saving in file json format via Model
+
+
+=====================================================================
+10.5 setting up MySQL
+
+npm install --save mysql2
+
+in util folder :database.js
+
+const mysql = require('mysql2')
+const pool = mysql.createPool({
+    host:"localhost",
+    user:"root",
+    database:"node-complete",
+    password:"12345678"
+});
+
+module.exports = pool.promise();
+
+-----------------
+app.js
+
+const db = require('./util/database');
+db.execute('SELECT * FROM products').then().catch();
+
+
+
+
+
+
+
+
+
+
+
+
+	

@@ -1,0 +1,190 @@
+npm init
+
+npm i graphql apollo-server
+
+Querry : get the data 
+Mutation : Update the data
+
+in resolver parent,args,context : //parent is used to solve join to tables or filter from table with id or some unique fields
+
+context is created as abject variable while instantiating server = new ApolloServer in server.js and we can access in resolvers as 3rd argument and set it as we want..
+
+________________________________________________________
+
+Prisma : to help connect with Databases SQL , mongodb
+
+npm install prisma --save-dev
+npx prisma init //to initialize prisma creates schema file 
+
+after creating model 
+npx prisma db push //to create tables in Databases
+
+//npx prisma studio -> to visualize tables
+
+//install prisma client for creating new user in Mutation
+npm install @prisma/client
+
+await bcrypt.hash(userNew.password, 10)
+use await for async //error resolved
+
+npm install jsonwebtoken
+
+//context should be defined in await startStandaloneServer 
+
+==============================
+
+//for front-end using react
+npx create-react-app client
+
+cd client
+npm start
+
+//some mui packages
+npm install @mui/material @emotion/react @emotion/styled
+
+npm install @mui/icons-material
+
+
+//react router
+npm install react-router-dom
+
+//roboto font add to header
+Add to public/index.html
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+/>
+
+// install extension ES7+ in vs code 
+type rafce and press enter to get boiler code for react
+
+// remember import from mui package seperately
+import Box from "@mui/material/Box"
+import Stack from "@mui/material/Stack"
+import Typography from "@mui/material/Typography"
+import Button from "@mui/material/Button"
+import TextField from "@mui/material/TextField"
+
+// useRef in react to clear input fields 
+
+// nodemon server to open Apollo server
+// 1.cd client 2.npm start //to start the client react application for viewing web package
+
+
+
+// useParam hooks to get id or data from url
+ 
+Apollo client to consume graphql api
+
+npm install @apollo/client3.5.10 graphql
+
+// resolver -> ForbiddenError try if not working
+
+On sending 
+error.extensions = {
+          code: "UNAUTHENTICATED",
+          http: { status: 401 },
+        }
+with graphql we cannot access custom message 
+
+_______________________________________________________________
+graphql subscription // web socket protocol
+
+npm i apollo-server-express graphql-ws @graphql-tools/schema
+npm i ws
+replace apollo-server with apollo-server-express by searching globally
+
+npm i express
+
+https://www.apollographql.com/docs/apollo-server/v3/data/subscriptions/#switching-to-graphql-ws
+
+//important link
+https://www.apollographql.com/docs/apollo-server/data/subscriptions
+
+npm install graphql-subscriptions //pub-sub
+_______________________________________
+
+client
+npm install graphql-ws //support react 18 only
+
+___________________________________________________
+image support for chat application
+
+//file picker
+<div class = "form-control">
+	<label for="image">Image</label>
+	<input
+		type = "file"
+		name = "image"
+		id = "image">
+</div>
+
+//parser for image body_parser by default urlencoded as text
+// for binary data it will work but for file data
+
+npm install --save multer
+// we can still keep body parser for form data
+
+add enctype in form
+<form enctype = "multipart/form-data">
+
+------------------------------------
+const multer = require('multer')
+
+//after body parser
+const fileStorage = multer.diskStorage({
+	destination: (req,file,cb) = {
+		cb(null,'images');
+		},
+	filename: (req,file,cb) => {
+		cb(null,new Date().toISOString() + '-' + file.originalname);
+	}
+	});
+const fileFilter = (req,file,cb) => {
+	if(file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
+	cb(null,true);
+	}
+	cb(null,false);
+};
+app.use(multer({storage:fileStorage , fileFilter:fileFilter}).single('image')) //name should be same as field name
+postAddProduct = () => {
+// to extract files
+const image = req.file;
+if(!image){
+    return res.status(422).render('admin/edit-product', {
+    pageTitle: 'Add Product',
+    path: '/admin/add-product',
+    editing: false,
+    hasError: true,
+    product: {
+        title: title,
+        price: price,
+        description: description
+    },
+    errorMessage: 'Attached file is not an image.',
+    validationErrors: []
+	});
+}
+const imageUrl = image.path;
+}
+app.use('/images',express.static(path.join(__dirname,'images')));
+check for '/images' if work or without this
+
+//Displaying image
+
+<div class = "image_show">
+	<img src = "/<%= product.imageUrl %>"
+</div>
+// use '/' in beginning or while storing save with'/' in beginning
+
+
+
+
+
+
+
+
+
+
+
+
