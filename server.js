@@ -12,6 +12,7 @@ import bodyParser from "body-parser"
 import { graphqlUploadExpress } from "graphql-upload"
 import cors from "cors"
 const __dirname = path.resolve()
+const port = process.env.PORT || 4000
 
 const app = express()
 
@@ -42,7 +43,7 @@ const apolloserver = new ApolloServer({
 await apolloserver.start()
 apolloserver.applyMiddleware({ app, path: "/graphql" })
 
-const server = app.listen(4000, () => {
+const server = app.listen(port, () => {
   const wsServer = new WebSocketServer({
     server,
     path: "/graphql",
