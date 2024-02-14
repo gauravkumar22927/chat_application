@@ -10,17 +10,15 @@ import express from "express"
 import path from "path"
 import bodyParser from "body-parser"
 import { graphqlUploadExpress } from "graphql-upload"
-import cors from "cors"
 const __dirname = path.resolve()
 const port = process.env.PORT || 4000
 
 const app = express()
 
-var corsOptions = {
-  origin: "http://localhost:3000"
-};
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*")
+})
 
-app.use(cors(corsOptions));
 app.use("/images", express.static(path.join(__dirname, "images")))
 app.use(bodyParser.json())
 app.use("/graphql", graphqlUploadExpress())
