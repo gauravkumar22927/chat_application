@@ -16,13 +16,11 @@ const port = process.env.PORT || 4000
 
 const app = express()
 
-app.use(
-  cors({
-    origin: "*", // Only allow requests from this origin
-    methods: ["GET", "POST"], // Only allow specified HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Only allow specified headers
-  })
-)
+var corsOptions = {
+  origin: "http://localhost:3000"
+};
+
+app.use(cors(corsOptions));
 app.use("/images", express.static(path.join(__dirname, "images")))
 app.use(bodyParser.json())
 app.use("/graphql", graphqlUploadExpress())
