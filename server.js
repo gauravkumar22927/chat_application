@@ -11,26 +11,14 @@ import path from "path"
 import bodyParser from "body-parser"
 import { graphqlUploadExpress } from "graphql-upload"
 const __dirname = path.resolve()
+import cors from "cors"
 const port = process.env.PORT || 4000
 
 const app = express()
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-
-  // Handle preflight request
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+app.use(cors<cors.CorsRequest>({
+  origin: ['http://localhost:3000', '*']
+}));
 
 
 app.use("/images", express.static(path.join(__dirname, "images")))
